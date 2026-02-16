@@ -1,8 +1,12 @@
 import 'dart:io';
 import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:google_maps_webservice/geocoding.dart' as geocoding;
 import '../../routes/app_pages.dart';
 import '../services/iot_bridge_service.dart';
+import '../data/models/map_location.dart';
 
 class ConnectController extends GetxController {
   final isConnecting = false.obs;
@@ -19,6 +23,10 @@ class ConnectController extends GetxController {
 
   // Keep service alive here
   final IotBridgeService _iotService = IotBridgeService();
+  
+  // Geocoding service for reverse geocoding
+  static const String _apiKey = "AIzaSyBA1CJG03TjIIaYeFRaWh3tbc6YBUNaVUk";
+  final _geocodingService = geocoding.GoogleMapsGeocoding(apiKey: _apiKey);
 
   void connectToDevice() async {
     isConnecting.value = true;
@@ -66,6 +74,86 @@ class ConnectController extends GetxController {
 
     // Navigate to Map View after connection
     Get.toNamed(Routes.map);
+  }
+
+  void goToDashboardWithLocation() async {
+    try {
+      // Get user location and navigate to dashboard
+      MapLocation? userLocation = await _getUserLocation();
+      Get.toNamed(Routes.weather, arguments: userLocation);
+    } catch (e) {
+      print("Error navigating to dashboard: $e");
+      // Fallback: navigate without location
+      Get.toNamed(Routes.weather);
+    }
+  }
+
+  Future<MapLocation?> _getUserLocation() async {
+    try {
+      bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!serviceEnabled) {
+        print("Location services disabled");
+        return null;
+      }
+
+      LocationPermission permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+      }
+      
+      if (permission == LocationPermission.denied ||
+          permission == LocationPermission.deniedForever) {
+        print("Location permission not granted");
+        return null;
+      }
+
+      final position = await Geolocator.getCurrentPosition();
+      final latLng = LatLng(position.latitude, position.longitude);
+
+      // Reverse Geocoding to get location name and address
+      String name = "My Location";
+      String address = "Unknown Address";
+
+      try {
+        final response = await _geocodingService.searchByLocation(
+          geocoding.Location(lat: latLng.latitude, lng: latLng.longitude),
+        );
+
+        if (response.isOkay && response.results.isNotEmpty) {
+          final result = response.results.first;
+          address = result.formattedAddress ?? address;
+          // Use locality or sublocality for name if available
+          for (var component in result.addressComponents) {
+            if (component.types.contains("locality")) {
+              name = component.longName;
+              break;
+            }
+          }
+        }
+      } catch (e) {
+        print("Reverse geocoding error: $e");
+        // Continue with default name/address
+      }
+
+      final location = MapLocation(
+        id: 'current_user',
+        name: name,
+        position: latLng,
+        address: address,
+        type: MapLocation.typeDot,
+        // Empty ski data for user location
+        skiLiftsRange: null,
+        turnstilesRange: null,
+        arrivalPoints: [],
+        pistes: [],
+      );
+
+      print("User location obtained: $name at ${latLng.latitude}, ${latLng.longitude}");
+      return location;
+    } catch (e) {
+      print("Error getting user location: $e");
+      return null;
+    }
   }
 
   Future<bool> _checkPermissions() async {

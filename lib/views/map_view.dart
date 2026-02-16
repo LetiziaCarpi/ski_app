@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../../core/values/app_colors.dart';
-import '../../routes/app_pages.dart';
 import '../../data/models/map_location.dart';
+import '../../routes/app_pages.dart';
 import '../controllers/map_controller.dart';
 
 class MapView extends GetView<MapController> {
@@ -156,22 +156,6 @@ class MapView extends GetView<MapController> {
                               ],
                             ),
                           ),
-                          const SizedBox(width: 8),
-                          OutlinedButton(
-                            onPressed: controller.goToDashboard,
-                            style: OutlinedButton.styleFrom(
-                              foregroundColor: Colors.white,
-                              side: const BorderSide(color: Colors.white54),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 16,
-                                vertical: 10,
-                              ),
-                            ),
-                            child: const Text('Go to Dashboard'),
-                          ),
                         ],
                       ),
                     ),
@@ -198,8 +182,43 @@ class MapView extends GetView<MapController> {
                               ),
                             ),
                           ] else ...[
-                            // Show Weather if Ski data is missing (User Location)
-                            // REMOVED: Temperature and Condition cards
+                            // Back to Connection Button
+                            Expanded(
+                              child: OutlinedButton(
+                                onPressed: () => Get.toNamed(Routes.connect),
+                                style: OutlinedButton.styleFrom(
+                                  foregroundColor: Colors.white,
+                                  side: const BorderSide(color: Colors.white54),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 16,
+                                    vertical: 10,
+                                  ),
+                                ),
+                                child: const Text('Go to Connection'),
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            // Go to Dashboard Button
+                            Expanded(
+                              child: OutlinedButton(
+                                onPressed: controller.goToDashboard,
+                                style: OutlinedButton.styleFrom(
+                                  foregroundColor: Colors.white,
+                                  side: const BorderSide(color: Colors.white54),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 16,
+                                    vertical: 10,
+                                  ),
+                                ),
+                                child: const Text('Go to Dashboard'),
+                              ),
+                            ),
                           ],
                         ],
                       ),
@@ -207,48 +226,26 @@ class MapView extends GetView<MapController> {
 
                     const SizedBox(height: 12),
 
-                    // Bottom buttons: Back to Connection (left) and Go to Dashboard (right)
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          // Back to Connection
-                          OutlinedButton(
-                            onPressed: () => Get.toNamed(Routes.connect),
-                            style: OutlinedButton.styleFrom(
-                              foregroundColor: Colors.white,
-                              side: const BorderSide(color: Colors.white54),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 16,
-                                vertical: 10,
-                              ),
-                            ),
-                            child: const Text('Back to Connection'),
-                          ),
-
-                          // Go to Dashboard
-                          OutlinedButton(
-                            onPressed: () => Get.toNamed(Routes.weather),
-                            style: OutlinedButton.styleFrom(
-                              foregroundColor: Colors.white,
-                              side: const BorderSide(color: Colors.white54),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 16,
-                                vertical: 10,
-                              ),
-                            ),
-                            child: const Text('Go to Dashboard'),
-                          ),
-                        ],
-                      ),
-                    ),
+                    // // Arrival Point and PISTE Row
+                    // Padding(
+                    //   padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
+                    //   child: Row(
+                    //     crossAxisAlignment: CrossAxisAlignment.start,
+                    //     children: [
+                    //       // Arrival Point Card
+                    //       Expanded(
+                    //         child: _buildArrivalPointCard(
+                    //           location.arrivalPoints ?? [],
+                    //         ),
+                    //       ),
+                    //       const SizedBox(width: 12),
+                    //       // PISTE Card
+                    //       Expanded(
+                    //         child: _buildPisteCard(location.pistes ?? []),
+                    //       ),
+                    //     ],
+                    //   ),
+                    // ),
                   ],
                 ),
               ),

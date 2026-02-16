@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'dart:io';
 import '../../core/values/app_colors.dart';
 import '../../routes/app_pages.dart';
 import '../controllers/connect_controller.dart';
@@ -141,7 +142,7 @@ class ConnectView extends GetView<ConnectController> {
                           children: [
                             // Go to Dashboard Button
                             OutlinedButton(
-                              onPressed: () => Get.toNamed(Routes.weather),
+                              onPressed: controller.goToDashboardWithLocation,
                               style: OutlinedButton.styleFrom(
                                 foregroundColor: Colors.white,
                                 side: const BorderSide(color: Colors.white54),
@@ -158,7 +159,19 @@ class ConnectView extends GetView<ConnectController> {
                             const SizedBox(width: 12),
                             // Go to Map Button
                             OutlinedButton(
-                              onPressed: () => Get.toNamed(Routes.map),
+                              onPressed: () {
+                                if (Platform.isMacOS) {
+                                  Get.snackbar(
+                                    'Unavailable',
+                                    'Map is not supported on macOS',
+                                    snackPosition: SnackPosition.BOTTOM,
+                                    backgroundColor: Colors.black54,
+                                    colorText: Colors.white,
+                                  );
+                                  return;
+                                }
+                                Get.toNamed(Routes.map);
+                              },
                               style: OutlinedButton.styleFrom(
                                 foregroundColor: Colors.white,
                                 side: const BorderSide(color: Colors.white54),

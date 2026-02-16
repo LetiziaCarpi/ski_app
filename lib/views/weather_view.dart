@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'dart:io';
 import '../controllers/weather_controller.dart';
 import '../controllers/connect_controller.dart';
 import '../../core/values/app_colors.dart';
@@ -31,21 +32,54 @@ class WeatherView extends GetView<WeatherController> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Go Back Button
-                Align(
-                  alignment: Alignment.topLeft,
-                  child: IconButton(
-                    icon: const Icon(
-                      Icons.arrow_back,
-                      color: Colors.white,
-                      size: 24,
+                // Navigation Buttons
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: OutlinedButton(
+                        onPressed: () => Get.toNamed(Routes.connect),
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: Colors.white,
+                          side: const BorderSide(color: Colors.white54),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          padding: const EdgeInsets.symmetric(vertical: 10),
+                        ),
+                        child: const Text('Go to Connection'),
+                      ),
                     ),
-                    onPressed: () => Get.back(),
-                    padding: EdgeInsets.zero,
-                    constraints: const BoxConstraints(),
-                  ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: OutlinedButton(
+                        onPressed: () {
+                          if (Platform.isMacOS) {
+                            Get.snackbar(
+                              'Unavailable',
+                              'Map is not supported on macOS',
+                              snackPosition: SnackPosition.BOTTOM,
+                              backgroundColor: Colors.black54,
+                              colorText: Colors.white,
+                            );
+                            return;
+                          }
+                          Get.toNamed(Routes.map);
+                        },
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: Colors.white,
+                          side: const BorderSide(color: Colors.white54),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          padding: const EdgeInsets.symmetric(vertical: 10),
+                        ),
+                        child: const Text('Go to Map'),
+                      ),
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 10),
+                const SizedBox(height: 20),
                 _buildStatusBar(),
                 _buildHeader(),
                 const SizedBox(height: 30),
@@ -58,10 +92,6 @@ class WeatherView extends GetView<WeatherController> {
                 _buildEnvCards(),
                 const SizedBox(height: 20),
                 _buildHourlyForecast(),
-                const SizedBox(height: 20),
-                _buildWindAndPressure(),
-                const SizedBox(height: 20),
-                _buildSunTimeline(),
                 const SizedBox(height: 20),
                 _buildResortInfo(),
               ],
@@ -209,14 +239,6 @@ class WeatherView extends GetView<WeatherController> {
               Icons.flash_on, // Matching the lightning bolt icon from image
               '${controller.windSpeed.value} m/s',
               'Wind Speed',
-            ),
-          ),
-          Container(height: 40, width: 1, color: Colors.white.withOpacity(0.3)),
-          Expanded(
-            child: _buildStatItem(
-              Icons.wb_cloudy_outlined,
-              controller.sunrise.value,
-              'Sunrise',
             ),
           ),
         ],
@@ -561,7 +583,7 @@ class WeatherView extends GetView<WeatherController> {
         Expanded(
           child: Obx(
             () => Container(
-              height: 190, // Increased height
+              height: 170,
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
                 color: const Color(0xFF291942), // Exact background
@@ -601,39 +623,40 @@ class WeatherView extends GetView<WeatherController> {
                     ),
                   ),
                   const SizedBox(height: 12),
-                  Container(
-                    height: 5,
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(2),
-                      gradient: const LinearGradient(
-                        colors: [
-                          Colors.green,
-                          Colors.yellow,
-                          Colors.red,
-                          Colors.purple,
-                        ],
-                      ),
-                    ),
-                    child: Stack(
-                      alignment: Alignment.centerLeft,
-                      children: [
-                        Container(
-                          margin: const EdgeInsets.only(
-                            left: 0,
-                          ), // Position at 0
-                          width: 4,
-                          height: 4,
-                          decoration: const BoxDecoration(
-                            color: Colors.white,
-                            shape: BoxShape.circle,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const Spacer(),
-                  Text(
+                  // // Colored gradient line removed
+                  // Container(
+                  //   height: 5,
+                  //   width: double.infinity,
+                  //   decoration: BoxDecoration(
+                  //     borderRadius: BorderRadius.circular(2),
+                  //     gradient: const LinearGradient(
+                  //       colors: [
+                  //         Colors.green,
+                  //         Colors.yellow,
+                  //         Colors.red,
+                  //         Colors.purple,
+                  //       ],
+                  //     ),
+                  //   ),
+                  //   child: Stack(
+                  //     alignment: Alignment.centerLeft,
+                  //     children: [
+                  //       Container(
+                  //         margin: const EdgeInsets.only(
+                  //           left: 0,
+                  //         ),
+                  //         width: 4,
+                  //         height: 4,
+                  //         decoration: const BoxDecoration(
+                  //           color: Colors.white,
+                  //           shape: BoxShape.circle,
+                  //         ),
+                  //       ),
+                  //     ],
+                  //   ),
+                  // ),
+                  const SizedBox(height: 12),
+                  /*Text(
                     connectController.isConnected.value
                         ? 'Ambient light measured\nby helmet sensor.'
                         : 'Low for the rest\nof the day.',
@@ -643,7 +666,7 @@ class WeatherView extends GetView<WeatherController> {
                       height: 1.3,
                       fontWeight: FontWeight.w400,
                     ),
-                  ),
+                  ),*/
                 ],
               ),
             ),
@@ -887,214 +910,6 @@ class WeatherView extends GetView<WeatherController> {
       default:
         return Icons.cloud_outlined;
     }
-  }
-
-  Widget _buildWindAndPressure() {
-    return Row(
-      children: [
-        Expanded(
-          child: Container(
-            height: 160,
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: const Color(0xFF1E1B33),
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: const Color(0xff8A8F93)),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'Wind',
-                  style: TextStyle(color: Colors.white, fontSize: 14),
-                ),
-                Expanded(
-                  child: Center(
-                    child: SizedBox(
-                      width: 100,
-                      height: 100,
-                      child: CustomPaint(
-                        painter: CompassPainter(),
-                        child: Center(
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                '${controller.windSpeed.value}',
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 24,
-                                ),
-                              ),
-                              const Text(
-                                'm/s',
-                                style: TextStyle(
-                                  color: Colors.white70,
-                                  fontSize: 10,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-        const SizedBox(width: 16),
-        Expanded(
-          child: Container(
-            height: 160,
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: const Color(0xFF1E1B33),
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: const Color(0xff8A8F93)),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text(
-                  'Air Pressure',
-                  style: TextStyle(color: Colors.white, fontSize: 14),
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    RichText(
-                      text: TextSpan(
-                        children: [
-                          TextSpan(
-                            text: '${controller.airPressure.value}',
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 32,
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
-                          const TextSpan(
-                            text: 'hPa',
-                            style: TextStyle(
-                              color: Colors.white70,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Container(
-                      height: 4,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(2),
-                        gradient: const LinearGradient(
-                          colors: [
-                            Colors.green,
-                            Colors.yellow,
-                            Colors.orange,
-                            Colors.purple,
-                          ],
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    const Text(
-                      'Low for the rest\nof the day.',
-                      style: TextStyle(color: Colors.white70, fontSize: 12),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildSunTimeline() {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: const Color(0xFF1E1B33),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xff8A8F93)),
-      ),
-      child: Column(
-        children: [
-          const Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Sunset',
-                style: TextStyle(color: Colors.white, fontSize: 14),
-              ),
-              Text(
-                'Sunrise',
-                style: TextStyle(color: Colors.white, fontSize: 14),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          Stack(
-            alignment: Alignment.center,
-            children: [
-              Container(
-                height: 4,
-                decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.2),
-                  borderRadius: BorderRadius.circular(2),
-                ),
-              ),
-              // Sun/Moon Icon on the timeline
-              Positioned(
-                left: 100, // Approximate position based on image
-                child: Container(
-                  padding: const EdgeInsets.all(4),
-                  decoration: const BoxDecoration(
-                    color: Color(0xFF1E1B33), // Match background to hide line
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Icon(
-                    Icons.nightlight_round,
-                    color: Colors.white,
-                    size: 20,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                controller.sunsetTime.value,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 18,
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
-              Text(
-                controller.sunriseTimeFull.value,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 18,
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
   }
 
   Widget _buildResortInfo() {
