@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import '../controllers/weather_controller.dart';
 import '../controllers/connect_controller.dart';
 import '../../core/values/app_colors.dart';
+import '../../routes/app_pages.dart';
 import 'painters.dart';
 
 class WeatherView extends GetView<WeatherController> {
@@ -30,6 +31,21 @@ class WeatherView extends GetView<WeatherController> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // Go Back Button
+                Align(
+                  alignment: Alignment.topLeft,
+                  child: IconButton(
+                    icon: const Icon(
+                      Icons.arrow_back,
+                      color: Colors.white,
+                      size: 24,
+                    ),
+                    onPressed: () => Get.back(),
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(),
+                  ),
+                ),
+                const SizedBox(height: 10),
                 _buildStatusBar(),
                 _buildHeader(),
                 const SizedBox(height: 30),

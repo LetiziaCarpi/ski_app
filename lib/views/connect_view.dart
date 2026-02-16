@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../core/values/app_colors.dart';
+import '../../routes/app_pages.dart';
 import '../controllers/connect_controller.dart';
 
 class ConnectView extends GetView<ConnectController> {
@@ -136,89 +137,24 @@ class ConnectView extends GetView<ConnectController> {
                       ),
                       child: IntrinsicHeight(
                         child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            // // Signal Strength
-                            // Expanded(
-                            //   child: Row(
-                            //     children: [
-                            //       const Icon(
-                            //         Icons.signal_cellular_alt,
-                            //         color: Colors.white,
-                            //         size: 32,
-                            //       ),
-                            //       const SizedBox(width: 12),
-                            //       Column(
-                            //         crossAxisAlignment:
-                            //             CrossAxisAlignment.start,
-                            //         children: [
-                            //           const Text(
-                            //             'Signal Strength',
-                            //             style: TextStyle(
-                            //               color: Colors.white,
-                            //               fontSize: 14,
-                            //             ),
-                            //           ),
-
-                            //           Obx(
-                            //             () => Text(
-                            //               controller.signalStrength.value,
-                            //               style: const TextStyle(
-                            //                 color: Colors.white,
-                            //                 fontWeight: FontWeight.bold,
-                            //                 fontSize: 15,
-                            //               ),
-                            //             ),
-                            //           ),
-                            //         ],
-                            //       ),
-                            //     ],
-                            //   ),
-                            // ),
-
-                            // Divider
-                            // VerticalDivider(
-                            //   color: Colors.white.withValues(alpha: 0.2),
-                            //   thickness: 1,
-                            // ),
-                            // //  const SizedBox(width: 16),
-
-                            // // Battery Level
-                            // Expanded(
-                            //   child: Row(
-                            //     children: [
-                            //       const Icon(
-                            //         Icons.battery_std,
-                            //         color: Colors.white,
-                            //         size: 32,
-                            //       ),
-                            //       const SizedBox(width: 12),
-                            //       Column(
-                            //         crossAxisAlignment:
-                            //             CrossAxisAlignment.start,
-                            //         children: [
-                            //           const Text(
-                            //             'Battery Level',
-                            //             style: TextStyle(
-                            //               color: Colors.white,
-                            //               fontSize: 14,
-                            //             ),
-                            //           ),
-
-                            //           Obx(
-                            //             () => Text(
-                            //               '${controller.batteryLevel.value}%',
-                            //               style: const TextStyle(
-                            //                 color: Colors.white,
-                            //                 fontWeight: FontWeight.bold,
-                            //                 fontSize: 15,
-                            //               ),
-                            //             ),
-                            //           ),
-                            //         ],
-                            //       ),
-                            //     ],
-                            //   ),
-                            // ),
+                            // Go to Dashboard Button
+                            OutlinedButton(
+                              onPressed: () => Get.toNamed(Routes.weather),
+                              style: OutlinedButton.styleFrom(
+                                foregroundColor: Colors.white,
+                                side: const BorderSide(color: Colors.white54),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 24,
+                                  vertical: 10,
+                                ),
+                              ),
+                              child: const Text('Go to Dashboard'),
+                            ),
                           ],
                         ),
                       ),
