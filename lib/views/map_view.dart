@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../../core/values/app_colors.dart';
+import '../../routes/app_pages.dart';
 import '../../data/models/map_location.dart';
 import '../controllers/map_controller.dart';
 
@@ -198,25 +199,7 @@ class MapView extends GetView<MapController> {
                             ),
                           ] else ...[
                             // Show Weather if Ski data is missing (User Location)
-                            Expanded(
-                              child: Obx(
-                                () => _buildCompactInfoCard(
-                                  title: 'Temperature',
-                                  value: controller.currentTemp.value,
-                                  icon: Icons.thermostat,
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: Obx(
-                                () => _buildCompactInfoCard(
-                                  title: 'Condition',
-                                  value: controller.currentCondition.value,
-                                  icon: Icons.wb_cloudy,
-                                ),
-                              ),
-                            ),
+                            // REMOVED: Temperature and Condition cards
                           ],
                         ],
                       ),
@@ -224,22 +207,44 @@ class MapView extends GetView<MapController> {
 
                     const SizedBox(height: 12),
 
-                    // Arrival Point and PISTE Row
+                    // Bottom buttons: Back to Connection (left) and Go to Dashboard (right)
                     Padding(
                       padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
                       child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          // Arrival Point Card
-                          Expanded(
-                            child: _buildArrivalPointCard(
-                              location.arrivalPoints ?? [],
+                          // Back to Connection
+                          OutlinedButton(
+                            onPressed: () => Get.toNamed(Routes.connect),
+                            style: OutlinedButton.styleFrom(
+                              foregroundColor: Colors.white,
+                              side: const BorderSide(color: Colors.white54),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 10,
+                              ),
                             ),
+                            child: const Text('Back to Connection'),
                           ),
-                          const SizedBox(width: 12),
-                          // PISTE Card
-                          Expanded(
-                            child: _buildPisteCard(location.pistes ?? []),
+
+                          // Go to Dashboard
+                          OutlinedButton(
+                            onPressed: () => Get.toNamed(Routes.weather),
+                            style: OutlinedButton.styleFrom(
+                              foregroundColor: Colors.white,
+                              side: const BorderSide(color: Colors.white54),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 10,
+                              ),
+                            ),
+                            child: const Text('Go to Dashboard'),
                           ),
                         ],
                       ),

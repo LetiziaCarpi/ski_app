@@ -155,6 +155,23 @@ class ConnectView extends GetView<ConnectController> {
                               ),
                               child: const Text('Go to Dashboard'),
                             ),
+                            const SizedBox(width: 12),
+                            // Go to Map Button
+                            OutlinedButton(
+                              onPressed: () => Get.toNamed(Routes.map),
+                              style: OutlinedButton.styleFrom(
+                                foregroundColor: Colors.white,
+                                side: const BorderSide(color: Colors.white54),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 24,
+                                  vertical: 10,
+                                ),
+                              ),
+                              child: const Text('Go to Map'),
+                            ),
                           ],
                         ),
                       ),
