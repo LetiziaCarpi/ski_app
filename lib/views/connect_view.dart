@@ -41,7 +41,7 @@ class ConnectView extends GetView<ConnectController> {
 
               // Center Connect Button
               GestureDetector(
-                onTap: controller.connectToDevice,
+                onTap: controller.toggleConnection,
                 child: Stack(
                   alignment: Alignment.center,
                   children: [
@@ -99,16 +99,20 @@ class ConnectView extends GetView<ConnectController> {
                               )
                             : Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
-                                children: const [
+                                children: [
                                   Icon(
-                                    Icons.power_settings_new,
+                                    controller.isConnected.value
+                                        ? Icons.power
+                                        : Icons.power_settings_new,
                                     color: Colors.white,
                                     size: 40,
                                   ),
-                                  SizedBox(height: 8),
+                                  const SizedBox(height: 8),
                                   Text(
-                                    'Connect',
-                                    style: TextStyle(
+                                    controller.isConnected.value
+                                        ? 'Disconnect'
+                                        : 'Connect',
+                                    style: const TextStyle(
                                       color: Colors.white,
                                       fontSize: 14,
                                     ),

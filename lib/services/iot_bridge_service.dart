@@ -30,8 +30,15 @@ class IotBridgeService {
   StreamSubscription? _bleSubscription;
   StreamSubscription? _scanSubscription;
   Position? _currentPosition;
+  String _currentPiste = 'P4'; // Logical/fake piste identifier
   Timer? _simulationTimer;
   bool _isScanning = false;
+
+  /// Set the logical piste identifier (faked GPS location name)
+  void setPiste(String piste) {
+    _currentPiste = piste;
+    print("BRIDGE: Piste set to $_currentPiste");
+  }
 
   // --- DATA STREAM ---
   final _sensorDataController =
@@ -224,6 +231,7 @@ class IotBridgeService {
 
       Map<String, dynamic> fullPayload = {
         "helmet_id": helmetId,
+        "piste": _currentPiste,
         "timestamp": DateTime.now().millisecondsSinceEpoch ~/ 1000,
         "location": {
           "lat": _currentPosition?.latitude ?? 0.0,
@@ -272,6 +280,8 @@ class IotBridgeService {
       print('MQTT: Connecting...');
       await mqttClient!.connect();
       print('MQTT: Connected!');
+      
+      // Subscribe to helmet commands
       mqttClient!.subscribe(topicCmd, MqttQos.atMostOnce);
     } catch (e) {
       print('MQTT Error: $e');

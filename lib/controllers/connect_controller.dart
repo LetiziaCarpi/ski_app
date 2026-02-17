@@ -28,6 +28,16 @@ class ConnectController extends GetxController {
   static const String _apiKey = "AIzaSyBA1CJG03TjIIaYeFRaWh3tbc6YBUNaVUk";
   final _geocodingService = geocoding.GoogleMapsGeocoding(apiKey: _apiKey);
 
+  void toggleConnection() async {
+    if (isConnected.value) {
+      // Disconnect
+      disconnectDevice();
+    } else {
+      // Connect
+      connectToDevice();
+    }
+  }
+
   void connectToDevice() async {
     isConnecting.value = true;
     print("connectToDevice called");
@@ -71,9 +81,21 @@ class ConnectController extends GetxController {
     await Future.delayed(const Duration(seconds: 2));
 
     isConnecting.value = false;
+  }
 
-    // Navigate to Map View after connection
-    Get.toNamed(Routes.map);
+  void disconnectDevice() async {
+    print("disconnectDevice called");
+    try {
+      await _iotService.stopBridge();
+      isConnected.value = false;
+      helmetTemp.value = 0.0;
+      helmetHumidity.value = 0;
+      helmetLux.value = 0;
+      helmetFall.value = false;
+      helmetAccel.value = [0.0, 0.0, 0.0];
+    } catch (e) {
+      print("Disconnect Error: $e");
+    }
   }
 
   void goToDashboardWithLocation() async {

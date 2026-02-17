@@ -103,35 +103,7 @@ class WeatherView extends GetView<WeatherController> {
   }
 
   Widget _buildStatusBar() {
-    final connectController = Get.find<ConnectController>();
-    return Obx(() {
-      if (!connectController.isConnected.value) return const SizedBox.shrink();
-      return Padding(
-        padding: const EdgeInsets.only(bottom: 10),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            const Icon(
-              Icons.signal_cellular_alt,
-              color: Colors.white,
-              size: 16,
-            ),
-            const SizedBox(width: 4),
-            Text(
-              connectController.signalStrength.value,
-              style: const TextStyle(color: Colors.white, fontSize: 12),
-            ),
-            const SizedBox(width: 12),
-            const Icon(Icons.battery_std, color: Colors.white, size: 16),
-            const SizedBox(width: 4),
-            Text(
-              '${connectController.batteryLevel.value}%',
-              style: const TextStyle(color: Colors.white, fontSize: 12),
-            ),
-          ],
-        ),
-      );
-    });
+    return const SizedBox.shrink();
   }
 
   Widget _buildHeader() {
